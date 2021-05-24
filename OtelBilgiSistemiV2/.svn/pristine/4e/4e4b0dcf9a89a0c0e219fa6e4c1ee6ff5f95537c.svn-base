@@ -1,0 +1,135 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Data.Sql;
+using System.Data.SqlClient;
+
+
+namespace OtelBilgiSistemi
+{
+    public partial class MusteriKaydi : Form
+    {
+        public MusteriKaydi()
+        {
+            InitializeComponent();
+        }
+
+        SqlConnection bagla = new SqlConnection("Data Source = localhost\\SQLEXPRESS; Initial Catalog = OtelBilgiSistemiDB; Integrated Security = True");
+
+
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            textBoxOdaNo.Text = "" + "OdaNo 2";
+
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            textBoxOdaNo.Text = "" + "OdaNo 4";
+
+        }
+
+        private void buttonOda1_Click(object sender, EventArgs e)
+        {
+            textBoxOdaNo.Text = "" + "OdaNo 1";
+
+
+
+
+        }
+
+        private void buttonOda3_Click(object sender, EventArgs e)
+        {
+            textBoxOdaNo.Text = "" + "OdaNo 3";
+
+        }
+
+        private void buttonOda5_Click(object sender, EventArgs e)
+        {
+            textBoxOdaNo.Text = "" + "OdaNo 5";
+
+        }
+
+        private void buttonOda6_Click(object sender, EventArgs e)
+        {
+            textBoxOdaNo.Text = "" + "OdaNo 6";
+
+        }
+
+        private void buttonOda7_Click(object sender, EventArgs e)
+        {
+            textBoxOdaNo.Text = "" + "OdaNo 7";
+
+        }
+
+        private void buttonOda8_Click(object sender, EventArgs e)
+        {
+            textBoxOdaNo.Text = "" + "OdaNo 8";
+
+        }
+
+        private void buttonOda9_Click(object sender, EventArgs e)
+        {
+            textBoxOdaNo.Text = "" + "OdaNo 9";
+
+        }
+
+        private void buttonUcret_Click(object sender, EventArgs e)
+        {
+            labelUcret.Visible = true;
+            DateTime giris = Convert.ToDateTime(dateTimeGiris.Text);
+            DateTime cikis = Convert.ToDateTime(dateTimeCikis.Text);
+            TimeSpan total = cikis - giris;
+            labelGun.Text = total.TotalDays.ToString();
+            int ucret = Convert.ToInt32(labelGun.Text);
+
+
+            labelUcret.Text = ucret * 100 + "TL.";
+
+        }
+
+        private void MusteriKaydi_Load(object sender, EventArgs e)
+        {
+
+
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonKayıtAl_Click(object sender, EventArgs e)
+        {
+            if (textBoxTc.Text.Length == 11 && decimal.TryParse(textBoxTc.Text, out decimal tcno))
+            {
+
+
+                bagla.Open();
+                SqlCommand com = new SqlCommand("insert into MusteriBilgileri (Adi,Soyadi,Cinsiyet,Telefon,TcNo,Email,OdaNo,GirisTarihi,CikisTarihi) values(@Adi,@Soyadi,@Cinsiyet,@tel,@tc,@email,@odano,@girist,@cikist)", bagla);
+                com.Parameters.AddWithValue("@Adi", textBoxAdı.Text);
+                com.Parameters.AddWithValue("@Soyadi", textBoxSoyadı.Text);
+                com.Parameters.AddWithValue("@Cinsiyet", comboBoxCinsiyet.Text);
+                com.Parameters.AddWithValue("@tel", maskedTextBoxTel.Text);
+                com.Parameters.AddWithValue("@tc", tcno);
+                com.Parameters.AddWithValue("@email", textBoxEmail.Text);
+                com.Parameters.AddWithValue("@odano", textBoxOdaNo.Text);
+                com.Parameters.AddWithValue("@girist", Convert.ToDateTime(dateTimeGiris.Text));
+                com.Parameters.AddWithValue("@cikist", Convert.ToDateTime(dateTimeCikis.Text));
+                com.ExecuteNonQuery();
+                bagla.Close();
+            }
+            else
+            {
+                MessageBox.Show("tcnoyu düzgün gir","HATA");
+            }
+        }
+    }
+}

@@ -1,0 +1,105 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Data.Sql;
+using System.Data.SqlClient;
+
+namespace OtelBilgiSistemi
+{
+    public partial class KayıtlıMusteriListesi : Form
+    {
+        public KayıtlıMusteriListesi()
+        {
+            InitializeComponent();
+        }
+        SqlConnection bagla = new SqlConnection("Data Source = localhost\\SQLEXPRESS; Initial Catalog = OtelBilgiSistemiDB; Integrated Security = True");
+
+
+
+        private void MusteriListesiDoldur()
+        {
+      
+            dataGridView1.DataSource = new VeriTabanıIslemleri().MusteriListele();
+
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            MusteriListesiDoldur();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+            if (textBoxTc.Text.Length == 11 && decimal.TryParse(textBoxTc.Text, out decimal tcno))
+            {
+                new VeriTabanıIslemleri().MusteriGuncelle(textBoxID.Text, textBoxAdı.Text, textBoxSoyadı.Text, comboBoxCinsiyet.Text, maskedTextBoxTel.Text, textBoxTc.Text, textBoxEmail.Text, textBoxOdaNo.Text, Convert.ToDateTime(dateTimeGiris.Text), Convert.ToDateTime(dateTimeCikis.Text));
+            }
+            else
+            {
+                MessageBox.Show("tcnoyu düzgün gir", "HATA");
+            }
+        }
+
+
+        private void dataGridView1_CellEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            textBoxID.Text = dataGridView1.CurrentRow.Cells[0].Value.ToString();
+            textBoxAdı.Text = dataGridView1.CurrentRow.Cells[1].Value.ToString();
+            textBoxSoyadı.Text = dataGridView1.CurrentRow.Cells[2].Value.ToString();
+            comboBoxCinsiyet.Text = dataGridView1.CurrentRow.Cells[3].Value.ToString();
+            maskedTextBoxTel.Text = dataGridView1.CurrentRow.Cells[4].Value.ToString();
+            textBoxTc.Text = dataGridView1.CurrentRow.Cells[5].Value.ToString();
+            textBoxEmail.Text = dataGridView1.CurrentRow.Cells[6].Value.ToString();
+            textBoxOdaNo.Text = dataGridView1.CurrentRow.Cells[7].Value.ToString();
+            dateTimeGiris.Text = dataGridView1.CurrentRow.Cells[8].Value.ToString();
+            dateTimeCikis.Text = dataGridView1.CurrentRow.Cells[9].Value.ToString();
+            
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            bagla.Open();
+            SqlCommand com = new SqlCommand("Delete from MusteriBilgileri where MusteriID=@mID",bagla);
+            com.Parameters.AddWithValue("@mID", textBoxID.Text);
+            com.ExecuteNonQuery();
+            bagla.Close();
+            MusteriListesiDoldur();
+            
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            bagla.Open();
+            SqlCommand com = new SqlCommand("Select *from MusteriBilgileri where Adi like '%" + textBoxArama.Text + "%'", bagla);
+            SqlDataAdapter dataadapter = new SqlDataAdapter(com);
+            DataSet dataset = new DataSet();
+            dataadapter.Fill(dataset);
+            dataGridView1.DataSource =  dataset.Tables[0];
+            bagla.Close();
+
+        }
+
+        private void textBoxArama_TextChanged(object sender, EventArgs e)
+        {
+            textBoxArama.Clear();
+        }
+
+        private void KayıtlıMusteriListesi_Load(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
+

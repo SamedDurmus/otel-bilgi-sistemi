@@ -1,0 +1,55 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace OtelBilgiSistemi
+{
+    class VeriTabanıIslemleri
+    {
+        SqlConnection bagla = new SqlConnection("Data Source = localhost\\SQLEXPRESS; Initial Catalog = OtelBilgiSistemiDB; Integrated Security = True");
+        internal void MusteriGuncelle(string MusteriID, string Adi, string Soyadi, string Cinsiyet, string Telefon, string TcNo, string Email, string OdaNo, DateTime GirisTarihi, DateTime CikisTarihi)
+        {
+            try
+            {
+                bagla.Open();
+                SqlCommand com = new SqlCommand("Update MusteriBilgileri set Adi=@ad, Soyadi=@soyad, Cinsiyet=@cinsiyet, Telefon=@tel, TcNo=@tc, Email=@email, OdaNo=@odano, GirisTarihi=@gtarih, CikisTarihi=@ctarih where MusteriID=@mID", bagla);
+                com.Parameters.AddWithValue("@mID", MusteriID);
+                com.Parameters.AddWithValue("@ad", Adi);
+                com.Parameters.AddWithValue("@soyad", Soyadi);
+                com.Parameters.AddWithValue("@cinsiyet", Cinsiyet);
+                com.Parameters.AddWithValue("@tel", Telefon);
+                com.Parameters.AddWithValue("@tc", TcNo);
+                com.Parameters.AddWithValue("@email", Email);
+                com.Parameters.AddWithValue("@odano", OdaNo);
+                com.Parameters.AddWithValue("@gtarih", GirisTarihi);
+                com.Parameters.AddWithValue("@ctarih", CikisTarihi);
+                com.ExecuteNonQuery();
+                bagla.Close();
+
+            }
+            catch (Exception hata)
+            {
+
+                string warning = hata.Message;
+            }
+
+
+
+        }
+
+        internal object MusteriListele()
+        {
+            SqlDataAdapter dataAdapt = new SqlDataAdapter("Select *from MusteriBilgileri", bagla);
+            DataSet dataset = new DataSet();
+            bagla.Open();
+            dataAdapt.Fill(dataset, "MusteriBilgileri");
+            bagla.Close();
+
+            return dataset.Tables["MusteriBilgileri"];
+        }
+    }
+}
